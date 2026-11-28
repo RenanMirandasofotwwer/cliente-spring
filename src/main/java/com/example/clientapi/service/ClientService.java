@@ -26,30 +26,33 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado. Id: " + id));
     }
 
     @Transactional
     public Client insert(Client client) {
-        client.setName(client.getName().trim());
-        client.setCpf(client.getCpf().trim());
+        if (repository.existsByCpf(client.getCpf())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado: " + client.getCpf());
+        }
         return repository.save(client);
     }
 
     @Transactional
-    public Client update(Long id, Client updatedClient) {
-        Client client = findById(id);
-        client.setName(updatedClient.getName().trim());
-        client.setCpf(updatedClient.getCpf().trim());
-        client.setIncome(updatedClient.getIncome());
-        client.setBirthDate(updatedClient.getBirthDate());
-        client.setChildren(updatedClient.getChildren());
-        return repository.save(client);
+    public Client update(Long id, Client client) {
+        Client entity = findById(id);
+        if (repository.existsByCpfAndIdNot(client.getCpf(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado: " + client.getCpf());
+        }
+        entity.setName(client.getName());
+        entity.setCpf(client.getCpf());
+        entity.setIncome(client.getIncome());
+        entity.setBirthDate(client.getBirthDate());
+        entity.setChildren(client.getChildren());
+        return repository.save(entity);
     }
 
     @Transactional
     public void delete(Long id) {
-        Client client = findById(id);
-        repository.delete(client);
+        repository.delete(findById(id));
     }
 }

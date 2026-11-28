@@ -41,7 +41,7 @@ public class Client {
     @NotNull
     @PastOrPresent
     @Column(nullable = false)
-    private Instant birth_date;
+    private Instant birthDate;
 
     @NotNull
     @Min(0)
@@ -51,11 +51,11 @@ public class Client {
     protected Client() {
     }
 
-    public Client(String name, String cpf, Double income, Instant birth_date, Integer children) {
+    public Client(String name, String cpf, Double income, Instant birthDate, Integer children) {
         this.name = name;
         this.cpf = cpf;
         this.income = income;
-        this.birth_date = birth_date;
+        this.birthDate = birthDate;
         this.children = children;
     }
 
@@ -87,12 +87,12 @@ public class Client {
         this.income = income;
     }
 
-    public Instant getbirth_date() {
-        return birth_date;
+    public Instant getBirthDate() {
+        return birthDate;
     }
 
-    public void setbirth_date(Instant birth_date) {
-        this.birth_date = birth_date;
+    public void setBirthDate(Instant birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Integer getChildren() {

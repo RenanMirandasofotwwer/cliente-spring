@@ -100,4 +100,27 @@ class ClientControllerIntegrationTest {
                                 """))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldRejectDuplicateCpf() throws Exception {
+        String clientJson = """
+                {
+                  "name": "Ana Beatriz Lima",
+                  "cpf": "123.456.789-01",
+                  "income": 6400.50,
+                  "birthDate": "1992-07-14T00:00:00Z",
+                  "children": 2
+                }
+                """;
+
+        mockMvc.perform(post("/clients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(clientJson))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/clients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(clientJson))
+                .andExpect(status().isConflict());
+    }
 }
